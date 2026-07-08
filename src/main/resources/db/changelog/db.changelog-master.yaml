@@ -39,8 +39,8 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: is_active
-                  type: boolean
-                  defaultValueComputed: true
+                  type: BOOLEAN
+                  defaultValueBoolean: true
               - column:
                   name: created_at
                   type: timestamp
