@@ -65,3 +65,104 @@ databaseChangeLog:
             columns:
               - column:
                   name: role
+
+  - changeSet:
+      id: 003:-create-apartments-table
+      author: postgres
+      changes:
+        - createTable:
+            tableName: apartments
+            columns:
+              - column:
+                name: id
+                type: BIGINT
+                constraints:
+                  primaryKey: true
+                  nullable: false
+              - column:
+                name: owner_id
+                type: BIGINT
+                constraints:
+                  nullable: false
+                  references: urers(id)
+                  deletCascade: true
+              - column:
+                  name: title
+                  type: VARCHAR(200)
+                  constaints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+
+              - column:
+                  name: price_per_night
+                  type: INT
+                  constaints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+                  constaints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: VARCHAR(100)
+                  constaints:
+                    nullable: false
+              - column:
+                  name: max_guests
+                  type: INT
+                  defaultValue: "1"
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+
+  - changeSet:
+      id: 004-add-apartments-indexes
+      author: postgres
+      changes:
+          - createIndex:
+              tableName: apartments
+              indexName: idx_apartments_owner
+              columns:
+                - column:
+                    name: owner_id
+          - createIndex:
+              tableName: apartments
+              indexName: idx_apartments_city
+              columns:
+                - column:
+                    name: city
+          - createIndex:
+              tableName: apartments
+              indexName: idx_apartments_price
+              columns:
+                - column:
+                    name: price_per_night
+          - createIndex:
+              tableName: apartments
+              indexName: idx_apartments_city_active
+              columns:
+                - column:
+                    name: city
+                - column:
+                    name: is_active
+
+
+
+
+
+
+
+
+
