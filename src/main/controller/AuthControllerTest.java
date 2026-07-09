@@ -1,5 +1,4 @@
 import com.booking.model.dto.auth.AurhRequest;
-import com.booking.model.dto.auth.AurhRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
