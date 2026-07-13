@@ -97,7 +97,17 @@ public class ApartmentService {
 
         return apartments.map(apartmentMapper::toResponse);
     }
+    public Page<ApartmentResponse> getMyApartments(Pageable pageable) {
+        User currentUser = getCurrentUser();
+        Page<Apartment> apartments = apartmentRepository.findByOwnerId(
+                currentUser.getId(), pageable);
+        return apartments.map(apartmentMapper::toResponse);
+    }
 
+    private boolean isOwner(Apartment apartment) {
+        User currentUser = getCurrentUser();
+        return apartment.getOwner().getId().equals(currentUser.getId());
+    }
 }
 
 
