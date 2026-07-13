@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: BIGINT
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -157,6 +157,116 @@ databaseChangeLog:
                     name: city
                 - column:
                     name: is_active
+
+  - changeSet:
+      id: 005-add-bookings-table
+      author: postgres
+      changes:
+        - createTeable:
+            tableName: bookings
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: apartment_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: apartments(id)
+                    deleteCascade: true
+              - column:
+                  name: guest_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: start_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_price
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: "PENDING"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: BIGINT
+                  defaultValue: "0"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+
+        - addCheckConstraint:
+           tableName: bookings
+           constraintName: check_dates
+           constraint: start_date < end_date
+
+  - changeSet:
+      id: 006-add-bookings-indexes
+      author: postgres
+      changes:
+        - createIndex:
+            tableName: bookings
+            indexName: idx_bookings_apartment_dates
+            columns:
+              - column:
+                  name: apartment_id
+              - column:
+                  name: start_date
+              - column:
+                  name: end_date
+        - createIndex:
+            tableName: bookings
+            indexName: idx_bookings_guest_id
+            columns:
+              - column:
+                  name: guest_id
+        - createIndex:
+            tableName: bookings
+            indexName: idx_bookings_status
+            columns:
+              - column:
+                  name: status
+        - createIndex:
+            tableName: bookings
+            indexName: idx_bookings_active_conflicts
+            columns:
+              - column:
+                  name: apartment_id
+              - column:
+                  name: start_date
+              - column:
+                  name: end_date
+            where: "status IN ('PENDING', 'CONFIRMED')"
+
+
+
+
 
 
 
