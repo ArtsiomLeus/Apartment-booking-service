@@ -45,6 +45,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.status = 'CONFIRMED' AND b.endDate < CURRENT_DATE")
     List<Booking> findExpiredBookings();
+
+    Page<Booking> findByApartmentOwnerId(Long id, Pageable pageable);
 }
 
 
