@@ -11,7 +11,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.LockModeType;
+
+import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +50,20 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findExpiredBookings();
 
     Page<Booking> findByApartmentOwnerId(Long id, Pageable pageable);
+
+    @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.status = :status")
+    BigInteger sumTotalPriceByStatus(@Param("status") BookingStatus status);
+
+    @Query("SELECT FUNCTION('DATE', b.createdAt), COUNT(b), COALESCE(SUM(b.totalPrice), 0) " +
+            "FROM Booking b " +
+            "WHERE b.createdAt BETWEEN :startDate AND :endDate " +
+            "GROUP BY FUNCTION('DATE', b.createdAt) " +
+            "ORDER BY FUNCTION('DATE', b.createdAt)")
+    List<Object[]> getDailyStats(@Param("startDate")LocalDateTime startDate,
+                                 @Param("endDate") LocalDateTime endDate);
+
+    long countByGuestId(Long guestId);
+    long countByStatus(BookingStatus status);
 }
 
 
